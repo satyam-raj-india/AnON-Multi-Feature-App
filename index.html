@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AnON Toolkit</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      text-align: center;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #0a0f24, #111931, #1a2647);
+      background-size: 300% 300%;
+      animation: bgMove 12s infinite alternate ease-in-out;
+      color: #fff;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 25px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 153, 0, 0.5);
+      box-shadow: 0 0 20px rgba(255, 153, 0, 0.5);
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #ff9900;
+      text-shadow: 0 0 8px #ff9900;
+    }
+
+    h2 {
+      color: #ffae35;
+      margin-top: 25px;
+      text-shadow: 0 0 6px #ffae35;
+    }
+
+    .download-btn, .small-btn {
+      background: linear-gradient(135deg, #ff7b00, #ff4500);
+      color: white;
+      padding: 14px 30px;
+      border-radius: 10px;
+      font-size: 17px;
+      border: none;
+      display: inline-block;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 20px 0 10px;
+      box-shadow: 0 0 12px rgba(255,100,0,0.8);
+      transition: 0.3s;
+      animation: glowPulse 1.5s infinite alternate;
+    }
+
+    .download-btn:hover,
+    .small-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255,120,0,1);
+    }
+
+    .small-btn {
+      padding: 10px 22px;
+      font-size: 15px;
+      margin-top: 6px;
+    }
+
+    @keyframes glowPulse {
+      from { box-shadow: 0 0 10px rgba(255,130,0,0.5); }
+      to { box-shadow: 0 0 20px rgba(255,150,0,0.9); }
+    }
+
+    .screenshots img {
+      width: 110px;
+      margin: 7px;
+      border-radius: 12px;
+      border: 2px solid rgba(255,165,0,0.4);
+      transition: 0.3s;
+    }
+
+    .screenshots img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 12px rgba(255,170,0,0.8);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    ul li {
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #ff9900;
+      animation: fadeIn 1s ease;
+    }
+
+    .dev img {
+      width: 120px;
+      border-radius: 50%;
+      margin-top: 10px;
+      border: 3px solid #ff9900;
+      box-shadow: 0 0 12px #ff9900;
+    }
+
+    .links a {
+      color: #ffae35;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .counter {
+      margin-top: 35px;
+      font-size: 20px;
+      padding: 10px;
+      border-top: 2px dashed rgba(255,255,255,0.2);
+      color: #ffdf9b;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" id="content">
+    <p>Loading AnON Toolkit...</p>
+  </div>
+
+  <script>
+    const BIN_URL = "https://api.jsonbin.io/v3/b/6877096165900461b7a2e24f";
+    const ACCESS_KEY = "$2a$10$hI2irqCvO82HZ6n7WpTs.eknoRwQ8Tfzzj7/HA9LWw0EyfrYCziu2";
+    const MASTER_KEY = "$2a$10$ukUKGjkM7/EGJA0z5uANdOqd2hW0gHAJyIRV/OPGPPzBlNWyC2FMm";
+
+    const shouldCountVisit = () => {
+      const lastVisit = localStorage.getItem("anon_visit_time");
+      const now = Date.now();
+      if (!lastVisit || now - parseInt(lastVisit) > 7 * 24 * 60 * 60 * 1000) {
+        localStorage.setItem("anon_visit_time", now.toString());
+        return true;
+      }
+      return false;
+    };
+
+    fetch(BIN_URL + "/latest", { headers: { "X-Access-Key": ACCESS_KEY } })
+    .then(res => res.json())
+    .then(data => {
+      const d = data.record;
+      const content = document.getElementById("content");
+
+      content.innerHTML = `
+        <h1>${d.title}</h1>
+        <p>${d.description}</p>
+
+        <!-- MAIN DOWNLOAD BUTTON -->
+        <a href="${d.apkLink}" target="_blank" class="download-btn">⬇️ Download APK</a>
+
+        <!-- NEW SMALL BUTTONS -->
+        <br>
+        <a href="https://t.me/anonappdownload" class="small-btn" download> Download Direct</a>
+        <br>
+        <a href="https://whatsapp.com/channel/0029VbB1gWpK5cD7vD1WuF1b" target="_blank" class="small-btn">Join Official Group</a>
+
+        <div class="screenshots">
+          ${d.screenshots.map(src => `<img src="${src}">`).join("")}
+        </div>
+
+        <h2>Features</h2>
+        <ul>${d.features.map(f => `<li>✔️ ${f}</li>`).join("")}</ul>
+
+        <h2>Upcoming Features</h2>
+        <ul>${d.upcoming.map(f => `<li>🔜 ${f}</li>`).join("")}</ul>
+
+        <h2>About Developer</h2>
+        <div class="dev">
+          <img src="${d.developer.image}">
+          <p><strong>${d.developer.name}</strong><br>${d.developer.location}</p>
+          <div class="links">
+            🌐 Website: <a href="${d.developer.website}" target="_blank">${d.developer.website}</a><br>
+            💬 Discord: <a href="${d.developer.discord}" target="_blank">${d.developer.discord}</a><br>
+            💬 Telegram: <a href="${d.developer.telegram}" target="_blank">${d.developer.telegram}</a>
+          </div>
+        </div>
+
+        <div class="counter">
+          <strong>Current Users</strong><br>
+          <span id="visitorCount">${d.userCount}</span>
+        </div>
+      `;
+
+      if (shouldCountVisit()) {
+        const updatedData = { ...d, userCount: d.userCount + 1 };
+        fetch(BIN_URL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": MASTER_KEY,
+            "X-Access-Key": ACCESS_KEY,
+            "X-Bin-Versioning": "false"
+          },
+          body: JSON.stringify(updatedData)
+        })
+        .then(() => {
+          document.getElementById("visitorCount").innerText = updatedData.userCount;
+        });
+      }
+    })
+    .catch(() => {
+      document.getElementById("content").innerHTML = "<p>❌ Failed to load data.</p>";
+    });
+  </script>
+
+</body>
+</html>
